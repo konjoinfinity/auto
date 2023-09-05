@@ -1,0 +1,51 @@
+name: Automatic pull request review
+on: [pull_request]
+jobs:
+  automate-pullrequest-review:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Get Data
+        id: getdata
+        run: |
+          sleep 15
+          RESPONSE=$(curl -s "https://ciprand.p3p.repl.co/api?len=150&count=1")
+          echo "::set-output name=data::$(echo $RESPONSE | jq -r '.Strings[0]')"
+          
+      - name: Comment PR
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          message: |
+            ${{ steps.getdata.outputs.data }}
+            
+      - name: Get Inspiration
+        id: getinspiration
+        run: |
+          sleep 15
+          RESPONSE=$(curl -s "https://api.fisenko.net/v1/quotes/en/random")
+          echo "::set-output name=text::$(echo $RESPONSE | jq -r '.text')"
+          echo "::set-output name=author::$(echo $RESPONSE | jq -r '.author.name')"
+
+      - name: Wait
+        id: wait
+        run: |
+          sleep 15
+        
+      - name: Approve pull request
+        if: github.actor == 'konjoinfinity'
+        uses: andrewmusgrave/automatic-pull-request-review@0.0.5
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          event: APPROVE
+          body: ${{ steps.getinspiration.outputs.text }} - ${{ steps.getinspiration.outputs.author }}
+
+      - name: Wait Again
+        id: waitagain
+        run: |
+          sleep 30
+          
+      - name: Merge
+        uses: KeisukeYamashita/auto-pull-request-merge@v1
+        with:
+          intervalSeconds: 5
+          timeoutSeconds: 30
