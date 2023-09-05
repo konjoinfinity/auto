@@ -1,0 +1,49 @@
+name: Repo Actions with APIs
+
+on: push
+
+jobs:
+  create-quote-file:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Fetch random quote from ZenQuotes API
+        id: fetchquote
+        run: |
+          sleep 5
+          RESPONSE=$(curl -s "https://zenquotes.io/api/random")
+          echo "::set-output name=quote::$(echo $RESPONSE | jq -r '.[0].q')"
+          echo "::set-output name=author::$(echo $RESPONSE | jq -r '.[0].a' | tr ' ' '-')"
+          
+      - name: Create and checkout new branch with authors name
+        run: |
+          sleep 10
+          git checkout -b "${{ steps.fetchquote.outputs.author }}"
+          
+      - name: Create a new file with the quote
+        run: |
+          sleep 5
+          echo "${{ steps.fetchquote.outputs.quote }}" > "${{ steps.fetchquote.outputs.author }}.md"
+      
+      - name: Commit and push
+        run: |
+          sleep 5
+          git config --local user.email "wesleyscholl@gmail.com"
+          git config --local user.name "konjoinfinity"
+          git pull origin main
+          git add -A
+          git commit -m "Add quote from: ${{ steps.fetchquote.outputs.author }}
+          
+          Co-authored-by: wesleyscholl <wscholl@totalwine.com>"
+          git push origin "${{ steps.fetchquote.outputs.author }}"
+ 
+      - name: create pull request
+        run: |
+          sleep 5
+          gh pr create -B main -H "${{ steps.fetchquote.outputs.author }}" --title 'Merge "${{ steps.fetchquote.outputs.author }}"' --body '- [x] This PR adds a new quote from ${{ steps.fetchquote.outputs.author }}.'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+     
