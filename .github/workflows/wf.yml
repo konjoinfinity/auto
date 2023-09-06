@@ -1,6 +1,8 @@
 name: Repo Actions with APIs
 
-on: push
+on: 
+  schedule:
+    - cron: '*/6 * * * *'
 
 jobs:
   create-quote-file:
@@ -36,7 +38,8 @@ jobs:
           git add -A
           git commit -m "Add quote from: ${{ steps.fetchquote.outputs.author }}
           
-          Co-authored-by: wesleyscholl <wscholl@totalwine.com>"
+          Co-authored-by: wesleyscholl <wscholl@totalwine.com>
+          Co-authored-by: konjotech <konjo@konjotech.com>"
           git push origin "${{ steps.fetchquote.outputs.author }}"
  
       - name: create pull request
