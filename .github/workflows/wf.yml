@@ -2,7 +2,7 @@ name: Repo Actions with APIs
 
 on: 
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '*/20 * * * *'
 
 jobs:
   create-quote-file:
