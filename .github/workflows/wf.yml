@@ -1,6 +1,6 @@
 name: Repo Actions with APIs
 
-on: push
+#on: push
 
 jobs:
   create-quote-file:
