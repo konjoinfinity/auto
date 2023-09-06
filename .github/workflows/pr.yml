@@ -17,6 +17,8 @@ jobs:
         with:
           message: |
             ${{ steps.getdata.outputs.data }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          reactions: +1, heart, hooray, rocket, eyes
             
       - name: Get Inspiration
         id: getinspiration
