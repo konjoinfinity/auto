@@ -51,3 +51,5 @@ jobs:
         with:
           intervalSeconds: 5
           timeoutSeconds: 30
+          comment: "Merged!"
+          token: ${{ secrets.GH_TOKEN }}
