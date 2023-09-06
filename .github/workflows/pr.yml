@@ -45,11 +45,19 @@ jobs:
         id: waitagain
         run: |
           sleep 30
+
+      - name: Get Quote
+        id: getquote
+        run: |
+          sleep 15
+          RESPONSE=$(curl -s "https://api.fisenko.net/v1/quotes/en/random")
+          echo "::set-output name=text::$(echo $RESPONSE | jq -r '.text')"
+          echo "::set-output name=author::$(echo $RESPONSE | jq -r '.author.name')"  
           
       - name: Merge
         uses: KeisukeYamashita/auto-pull-request-merge@v1
         with:
           intervalSeconds: 5
           timeoutSeconds: 30
-          comment: "Merged!"
+          comment: ${{ steps.getinspiration.outputs.text }} - ${{ steps.getinspiration.outputs.author }}
           token: ${{ secrets.GH_TOKEN }}
