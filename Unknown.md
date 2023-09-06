@@ -1,1 +1,1 @@
-A little progress each day adds up to big results.
+The finish line is just the beginning of a whole new race.
