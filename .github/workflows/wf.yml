@@ -38,8 +38,7 @@ jobs:
           git add -A
           git commit -m "Add quote from: ${{ steps.fetchquote.outputs.author }}
           
-          Co-authored-by: wesleyscholl <wscholl@totalwine.com>
-          Co-authored-by: konjotech <konjo@konjotech.com>"
+          Co-authored-by: wesleyscholl <wscholl@totalwine.com>"
           git push origin "${{ steps.fetchquote.outputs.author }}"
  
       - name: create pull request
